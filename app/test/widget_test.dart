@@ -9,7 +9,8 @@ void main() {
         child: CoinScopeApp(),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.text('Coins'), findsWidgets);
     expect(find.text('Market'), findsWidgets);
