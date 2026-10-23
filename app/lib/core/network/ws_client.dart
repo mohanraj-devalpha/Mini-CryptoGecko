@@ -40,7 +40,10 @@ class WsClient {
   String get _wsUrl {
     final uri = Uri.parse(baseUrl);
     final wsScheme = uri.scheme == 'https' ? 'wss' : 'ws';
-    return '$wsScheme://${uri.host}:${uri.port}/ws/prices';
+    final portSuffix = (uri.hasPort && uri.port != 80 && uri.port != 443 && uri.port != 0)
+        ? ':${uri.port}'
+        : '';
+    return '$wsScheme://${uri.host}$portSuffix/ws/prices';
   }
 
   void connect() {
