@@ -16,8 +16,27 @@ class GlobalMarket with _$GlobalMarket {
     @JsonKey(name: 'coin_count') required int coinCount,
   }) = _GlobalMarket;
 
-  factory GlobalMarket.fromJson(Map<String, dynamic> json) =>
-      _$GlobalMarketFromJson(json);
+  factory GlobalMarket.fromJson(Map<String, dynamic> json) {
+    if (json.containsKey('active_cryptocurrencies') || json.containsKey('market_cap_percentage')) {
+      return GlobalMarket.fromCoinGecko(json);
+    }
+    return _$GlobalMarketFromJson(json);
+  }
+
+  factory GlobalMarket.fromCoinGecko(Map<String, dynamic> json) {
+    final totalMarketCapMap = json['total_market_cap'] as Map<String, dynamic>? ?? {};
+    final totalVolumeMap = json['total_volume'] as Map<String, dynamic>? ?? {};
+    final marketCapPctMap = json['market_cap_percentage'] as Map<String, dynamic>? ?? {};
+
+    return GlobalMarket(
+      totalMarketCap: (totalMarketCapMap['usd'] as num?)?.toDouble() ?? 0.0,
+      totalVolume24h: (totalVolumeMap['usd'] as num?)?.toDouble() ?? 0.0,
+      btcDominance: (marketCapPctMap['btc'] as num?)?.toDouble() ?? 0.0,
+      ethDominance: (marketCapPctMap['eth'] as num?)?.toDouble() ?? 0.0,
+      marketCapChange24hPct: (json['market_cap_change_percentage_24h_usd'] as num?)?.toDouble() ?? 0.0,
+      coinCount: (json['active_cryptocurrencies'] as num?)?.toInt() ?? 1000,
+    );
+  }
 }
 
 @freezed

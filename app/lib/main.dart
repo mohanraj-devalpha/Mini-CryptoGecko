@@ -5,18 +5,18 @@ import 'core/theme/app_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: CoinScopeApp()));
+  runApp(const ProviderScope(child: CoinGeckoApp()));
 }
 
-class CoinScopeApp extends ConsumerWidget {
-  const CoinScopeApp({super.key});
+class CoinGeckoApp extends ConsumerWidget {
+  const CoinGeckoApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
-      title: 'CoinScope',
+      title: 'CoinGecko',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
@@ -25,3 +25,6 @@ class CoinScopeApp extends ConsumerWidget {
     );
   }
 }
+
+// Backwards-compatible alias for tests
+typedef CoinScopeApp = CoinGeckoApp;

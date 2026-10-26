@@ -50,6 +50,11 @@ class WsClient {
     if (_isDisposed) return;
     _cancelTimers();
 
+    if (baseUrl.contains('coingecko.com')) {
+      _startPollingFallback();
+      return;
+    }
+
     try {
       final uri = Uri.parse(_wsUrl);
       _channel = WebSocketChannel.connect(uri);
@@ -150,13 +155,36 @@ class WsClient {
 
   Future<void> _pollPrices() async {
     try {
-      final res = await apiClient.dio.get('/api/coins?per_page=100');
-      final data = res.data['data'] as List<dynamic>;
+      final res = await apiClient.dio.get(
+        '/coins/markets',
+        queryParameters: {
+          'vs_currency': 'usd',
+          'order': 'market_cap_desc',
+          'per_page': 50,
+          'page': 1,
+          'sparkline': false,
+        },
+      );
+      final dynamic raw = res.data;
+      final List<dynamic> data;
+      if (raw is List) {
+        data = raw;
+      } else if (raw is Map<String, dynamic> && raw['data'] is List) {
+        data = raw['data'] as List<dynamic>;
+      } else {
+        data = const [];
+      }
+
       final updates = data.map((item) {
+        final map = item as Map<String, dynamic>;
         return PriceUpdate(
-          coinId: item['id'] as String,
-          price: (item['price'] as num).toDouble(),
-          change24h: (item['change_24h_pct'] as num).toDouble(),
+          coinId: map['id'] as String,
+          price: (map['current_price'] as num?)?.toDouble() ??
+              (map['price'] as num?)?.toDouble() ??
+              0.0,
+          change24h: (map['price_change_percentage_24h'] as num?)?.toDouble() ??
+              (map['change_24h_pct'] as num?)?.toDouble() ??
+              0.0,
         );
       }).toList();
 

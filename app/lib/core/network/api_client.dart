@@ -37,10 +37,18 @@ class ApiClient {
     required this.slowRequestNotifier,
   });
 
+  bool get isCoinGecko {
+    try {
+      return dio.options.baseUrl.contains('coingecko.com');
+    } catch (_) {
+      return false;
+    }
+  }
+
   static String resolveDefaultBaseUrl() {
     const defined = String.fromEnvironment('API_BASE_URL');
     if (defined.isNotEmpty) return defined;
-    return 'https://coinscope-api.onrender.com';
+    return 'https://api.coingecko.com/api/v3';
   }
 
   factory ApiClient.create({
@@ -52,15 +60,18 @@ class ApiClient {
     final effectiveStore = deviceIdStore ?? DeviceIdStore();
     final effectiveSlowNotifier = slowNotifier ?? SlowRequestNotifier();
 
+    const apiKey = String.fromEnvironment('COINGECKO_API_KEY');
+
     final dio = Dio(
       BaseOptions(
         baseUrl: effectiveBaseUrl,
-        connectTimeout: const Duration(seconds: 60),
-        receiveTimeout: const Duration(seconds: 60),
-        sendTimeout: const Duration(seconds: 60),
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 30),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          if (apiKey.isNotEmpty) 'x-cg-demo-api-key': apiKey,
         },
       ),
     );
@@ -132,11 +143,24 @@ class ApiClient {
       final statusCode = resp.statusCode;
       final data = resp.data;
 
-      if (data is Map<String, dynamic> && data['error'] != null) {
-        final errObj = data['error'];
-        final msg = errObj['message'] ?? 'An error occurred';
-        final code = errObj['code']?.toString() ?? 'ERROR';
-        return AppException(msg.toString(), code: code, statusCode: statusCode);
+      if (statusCode == 429) {
+        return const AppException(
+          'CoinGecko rate limit exceeded (free tier allows 30 req/min). Please wait a few seconds and retry.',
+          code: 'RATE_LIMIT_EXCEEDED',
+          statusCode: 429,
+        );
+      }
+
+      if (data is Map<String, dynamic>) {
+        if (data['error'] != null) {
+          final errObj = data['error'];
+          final msg = errObj is Map ? (errObj['message'] ?? 'An error occurred') : errObj.toString();
+          return AppException(msg.toString(), code: 'API_ERROR', statusCode: statusCode);
+        }
+        if (data['status'] is Map<String, dynamic> && data['status']['error_message'] != null) {
+          final msg = data['status']['error_message'].toString();
+          return AppException(msg, code: 'API_ERROR', statusCode: statusCode);
+        }
       }
 
       if (statusCode == 404) {

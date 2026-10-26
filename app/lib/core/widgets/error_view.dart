@@ -16,22 +16,24 @@ class ErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 72,
-              height: 72,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
                 color: AppColors.redSurface,
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.red.withValues(alpha: 0.3)),
               ),
-              child: Icon(icon, size: 36, color: AppColors.red),
+              child: Icon(icon, size: 28, color: AppColors.red),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Text(
               'Oops! Something went wrong',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -39,29 +41,29 @@ class ErrorView extends StatelessWidget {
                   ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               message,
               style: TextStyle(
                 color: Theme.of(context).brightness == Brightness.dark
                     ? AppColors.darkTextSecondary
                     : AppColors.lightTextSecondary,
-                fontSize: 14,
+                fontSize: 13,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 18),
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh_rounded, size: 18),
               label: const Text('Try Again'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
+                foregroundColor: const Color(0xFF0F172A),
                 elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
@@ -71,3 +73,4 @@ class ErrorView extends StatelessWidget {
     );
   }
 }
+

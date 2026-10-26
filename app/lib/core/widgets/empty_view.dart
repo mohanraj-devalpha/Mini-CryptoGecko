@@ -21,14 +21,16 @@ class EmptyView extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 72,
-              height: 72,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
                 color: isDark ? AppColors.darkSurfaceElevated : AppColors.lightSurfaceElevated,
                 shape: BoxShape.circle,
@@ -38,11 +40,11 @@ class EmptyView extends StatelessWidget {
               ),
               child: Icon(
                 icon,
-                size: 36,
+                size: 28,
                 color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Text(
               title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -50,17 +52,17 @@ class EmptyView extends StatelessWidget {
                   ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               description,
               style: TextStyle(
                 color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-                fontSize: 14,
+                fontSize: 13,
               ),
               textAlign: TextAlign.center,
             ),
             if (actionLabel != null && onAction != null) ...[
-              const SizedBox(height: 24),
+              const SizedBox(height: 18),
               OutlinedButton.icon(
                 onPressed: onAction,
                 icon: const Icon(Icons.arrow_forward_rounded, size: 16),
@@ -68,9 +70,9 @@ class EmptyView extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primary,
                   side: const BorderSide(color: AppColors.primary),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),
@@ -81,3 +83,4 @@ class EmptyView extends StatelessWidget {
     );
   }
 }
+

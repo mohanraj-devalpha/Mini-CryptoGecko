@@ -56,7 +56,7 @@ class _CoinsScreenState extends ConsumerState<CoinsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CoinScope'),
+        title: const Text('CoinGecko'),
         actions: [
           IconButton(
             tooltip: 'Sort coins',
