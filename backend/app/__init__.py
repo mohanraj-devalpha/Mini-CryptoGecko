@@ -1,1 +1,0 @@
-"""CoinScope backend package."""

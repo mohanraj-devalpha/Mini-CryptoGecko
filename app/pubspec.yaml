@@ -1,5 +1,5 @@
 name: app
-description: "CoinScope - Crypto market research and simulator app"
+description: "CoinGecko - Crypto market research and simulator app"
 publish_to: "none"
 version: 1.0.0+1
 

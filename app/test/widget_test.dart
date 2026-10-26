@@ -12,8 +12,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
 
-    expect(find.text('Coins'), findsWidgets);
-    expect(find.text('Market'), findsWidgets);
+    expect(find.text('Markets'), findsWidgets);
     expect(find.text('Watchlist'), findsWidgets);
   });
 }

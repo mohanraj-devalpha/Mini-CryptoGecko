@@ -1,9 +1,0 @@
-fastapi==0.115.12
-uvicorn[standard]==0.34.2
-SQLAlchemy[asyncio]==2.0.41
-asyncpg==0.30.0
-alembic==1.16.1
-pydantic==2.11.5
-pydantic-settings==2.9.1
-slowapi==0.1.9
-numpy==2.2.6
